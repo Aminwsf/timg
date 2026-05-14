@@ -1,7 +1,7 @@
 const express = require("express");
-const Tesseract = require("tesseract.js");
+const { createWorker } = require("tesseract.js");
 const axios = require("axios");
-const sharp = require("sharp");
+//const sharp = require("sharp");
 
 const app = express();
 const PORT = 3000;
@@ -12,10 +12,14 @@ app.get("/trtimg", async (req, res) => {
   if (!url) return res.status(400).json({ error: 'Missing "url" query parameter' });
 
   try {
-    const response = await axios.get(url, { responseType: "arraybuffer" });
+    /*const response = await axios.get(url, { responseType: "arraybuffer" });
     const pngBuffer = await sharp(Buffer.from(response.data)).png().toBuffer();
-    const { data } = await Tesseract.recognize(pngBuffer, lang);
-    const text = data.text.trim();
+    const { data } = await Tesseract.recognize(pngBuffer, lang);*/
+
+    const worker = await createWorker(lang);
+    const data = await worker.recognize(url);
+    const text = data.data.text.trim();
+    await worker.terminate();
 
     const trt = await axios.get(`https://trt-php.vercel.app/translate.php?lang=ar&text=${encodeURIComponent(text)}`);
 

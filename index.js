@@ -65,7 +65,7 @@ app.get("/img2txt", async (req, res) => {
       {
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": process.env.ANTHROPIC_API_KEY,
+          //"x-api-key": process.env.ANTHROPIC_API_KEY,
           "anthropic-version": "2023-06-01",
         },
       }
